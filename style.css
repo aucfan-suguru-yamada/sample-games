@@ -36,11 +36,16 @@ body {
 }
 
 #target {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
   position: absolute;
   width: 72px;
   height: 72px;
+  padding: 0;
   border: 0;
   border-radius: 999px;
+  background-color: var(--accent);
   background: radial-gradient(circle at 30% 30%, #c9ecff 0%, var(--accent) 45%, #2679c7 100%);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
