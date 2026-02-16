@@ -8,6 +8,8 @@ const resetBtn = document.getElementById("resetBtn");
 const target = document.getElementById("target");
 const bonusTarget = document.getElementById("bonusTarget");
 const effect = document.getElementById("effect");
+const startModal = document.getElementById("startModal");
+const modalStartBtn = document.getElementById("modalStartBtn");
 
 const settings = {
   gameSeconds: 30,
@@ -51,6 +53,11 @@ function updateHud() {
   scoreText.textContent = `Score: ${state.score}`;
   comboText.textContent = `Combo: x${state.combo}`;
   timeText.textContent = `Time: ${state.remaining.toFixed(1)}`;
+}
+
+function setStartModalVisible(visible) {
+  startModal.hidden = !visible;
+  startModal.setAttribute("aria-hidden", String(!visible));
 }
 
 function showEffectAt(el, color = "rgba(89, 255, 208, 0.75)") {
@@ -132,6 +139,7 @@ function endGame() {
   hint.textContent = `終了！最終スコア: ${state.score}`;
   startBtn.disabled = false;
   startBtn.textContent = "もう一度";
+  setStartModalVisible(true);
 }
 
 function startGame() {
@@ -144,6 +152,7 @@ function startGame() {
   state.combo = 1;
   state.remaining = settings.gameSeconds;
   startBtn.disabled = true;
+  setStartModalVisible(false);
   hint.textContent = "スタート！連続ヒットで倍率アップ";
   updateHud();
   advanceTargets();
@@ -171,6 +180,7 @@ function resetGame() {
   hint.textContent = "30秒でハイスコアを目指そう！";
   startBtn.disabled = false;
   startBtn.textContent = "スタート";
+  setStartModalVisible(true);
   updateHud();
   moveElement(target, 160);
 }
@@ -180,6 +190,7 @@ target.addEventListener("touchstart", onTargetHit, { passive: false });
 bonusTarget.addEventListener("click", onBonusHit);
 bonusTarget.addEventListener("touchstart", onBonusHit, { passive: false });
 startBtn.addEventListener("click", startGame);
+modalStartBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
 stage.addEventListener("click", handleMiss);
 window.addEventListener("resize", () => {
@@ -190,4 +201,5 @@ window.addEventListener("resize", () => {
 });
 
 updateHud();
+setStartModalVisible(true);
 moveElement(target, 160);
