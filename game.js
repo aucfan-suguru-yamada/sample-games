@@ -38,7 +38,9 @@ async function ensureAudio() {
   if (!Ctx) return;
   audioCtx = new Ctx();
   if (audioCtx.state === "suspended") {
-    try { await audioCtx.resume(); } catch {}
+    try {
+      await audioCtx.resume();
+    } catch {}
   }
 }
 
@@ -59,6 +61,20 @@ function popSound() {
   osc.connect(gain).connect(audioCtx.destination);
   osc.start(t);
   osc.stop(t + 0.13);
+}
+
+function getPoint(evt) {
+  if (typeof evt.clientX === "number" && typeof evt.clientY === "number") {
+    return { x: evt.clientX, y: evt.clientY };
+  }
+
+  const touch = evt.changedTouches?.[0] || evt.touches?.[0];
+  if (touch) {
+    return { x: touch.clientX, y: touch.clientY };
+  }
+
+  const rect = stageRect();
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
 }
 
 overlay.classList.remove("hidden");
@@ -86,9 +102,15 @@ soundBtn.addEventListener("click", async () => {
   updateSoundIcon();
 });
 
-function rand(min, max) { return Math.random() * (max - min) + min; }
-function randi(min, max) { return Math.floor(rand(min, max + 1)); }
-function stageRect() { return stage.getBoundingClientRect(); }
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
+function randi(min, max) {
+  return Math.floor(rand(min, max + 1));
+}
+function stageRect() {
+  return stage.getBoundingClientRect();
+}
 
 function removeBubble(bubble) {
   if (!bubbles.has(bubble)) return;
@@ -128,14 +150,33 @@ function popBubble(bubble, clientX, clientY) {
   setTimeout(() => spawnBubble(), 120);
 }
 
+function bindBubblePop(bubble) {
+  const popHandler = (e) => {
+    e.preventDefault();
+    const point = getPoint(e);
+    popBubble(bubble, point.x, point.y);
+  };
+
+  if (window.PointerEvent) {
+    bubble.addEventListener("pointerdown", popHandler, { passive: false });
+    return;
+  }
+
+  bubble.addEventListener("touchstart", popHandler, { passive: false });
+  bubble.addEventListener("mousedown", popHandler);
+}
+
 function spawnBubble() {
   if (bubbles.size >= CFG.maxBubbles) return;
 
   const rect = stageRect();
-  const size = randi(CFG.bubbleMin, CFG.bubbleMax);
+  const maxBubbleByWidth = Math.max(42, rect.width - CFG.edgePadding * 2);
+  const bubbleMaxSize = Math.max(42, Math.min(CFG.bubbleMax, maxBubbleByWidth));
+  const bubbleMinSize = Math.min(CFG.bubbleMin, bubbleMaxSize);
+  const size = randi(bubbleMinSize, bubbleMaxSize);
 
   const xMin = CFG.edgePadding;
-  const xMax = rect.width - size - CFG.edgePadding;
+  const xMax = Math.max(xMin, rect.width - size - CFG.edgePadding);
 
   const yStart = rect.height + rand(10, 60);
   const x = rand(xMin, xMax);
@@ -147,10 +188,7 @@ function spawnBubble() {
   bubble.style.left = `${x}px`;
   bubble.style.top = `${yStart}px`;
 
-  bubble.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    popBubble(bubble, e.clientX, e.clientY);
-  });
+  bindBubblePop(bubble);
 
   stage.appendChild(bubble);
   bubbles.add(bubble);
@@ -173,12 +211,26 @@ function startLoop() {
   setInterval(() => spawnBubble(), CFG.spawnEveryMs);
 }
 
-stage.addEventListener("pointerdown", (e) => {
+function stageTapHandler(e) {
   if (e.target.classList && e.target.classList.contains("bubble")) return;
   if (Math.random() < 0.35) spawnBubble();
-});
+}
 
-document.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+if (window.PointerEvent) {
+  stage.addEventListener("pointerdown", stageTapHandler);
+} else {
+  stage.addEventListener("touchstart", stageTapHandler, { passive: true });
+  stage.addEventListener("mousedown", stageTapHandler);
+}
+
+stage.addEventListener(
+  "touchmove",
+  (e) => {
+    if (!overlay.classList.contains("hidden")) return;
+    e.preventDefault();
+  },
+  { passive: false }
+);
 
 startLoop();
 updateSoundIcon();
