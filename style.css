@@ -26,6 +26,42 @@ body {
   touch-action: manipulation;
 }
 
+.start-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 10, 24, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.start-modal[hidden] {
+  display: none !important;
+}
+
+.start-modal__card {
+  width: min(460px, calc(100% - 24px));
+  padding: 20px;
+  border: 1px solid rgba(131, 173, 255, 0.35);
+  border-radius: 16px;
+  background: rgba(20, 28, 52, 0.95);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.start-modal__card h2 {
+  margin: 0;
+}
+
+.start-modal__card p {
+  margin: 10px 0 16px;
+}
+
+#modalStartBtn {
+  background: linear-gradient(120deg, #2f63ff, #65a4ff);
+}
+
 .hud {
   position: relative;
   z-index: 5;
