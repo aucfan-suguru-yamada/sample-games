@@ -3,16 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>タップで1点ゲーム</title>
+  <title>ネオンタップクエスト</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <main id="stage" aria-label="タップゲーム">
-    <h1 id="title">タップで1点ゲーム</h1>
-    <p id="score">Score: 0</p>
-    <p id="hint">丸をタップしてね</p>
-    <button id="resetBtn" type="button">リセット</button>
-    <button id="target" type="button" aria-label="ターゲット"></button>
+  <main id="stage" aria-label="ネオンタップクエスト">
+    <section class="hud" aria-label="ゲーム情報">
+      <h1 id="title">ネオンタップクエスト</h1>
+      <p id="hint">30秒でハイスコアを目指そう！</p>
+      <div class="stats" role="status" aria-live="polite">
+        <p id="score">Score: 0</p>
+        <p id="combo">Combo: x1</p>
+        <p id="time">Time: 30.0</p>
+      </div>
+      <div class="controls">
+        <button id="startBtn" type="button">スタート</button>
+        <button id="resetBtn" type="button">リセット</button>
+      </div>
+    </section>
+
+    <button id="target" type="button" aria-label="通常ターゲット"></button>
+    <button id="bonusTarget" type="button" aria-label="ボーナスターゲット" hidden></button>
+    <div id="effect" aria-hidden="true"></div>
   </main>
 
   <script src="./game.js"></script>
