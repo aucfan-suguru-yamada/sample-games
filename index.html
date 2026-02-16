@@ -3,23 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ぽんっ！バブル割り</title>
+  <title>タップで1点ゲーム</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <main id="stage" aria-label="バブル割りゲーム">
-    <div id="hint">ぽんっ！<br><small>バブルをタップしてね</small></div>
-
-    <button id="soundBtn" class="sound" type="button" aria-label="音のオンオフ">🔈</button>
-
-    <div id="overlay" class="overlay hidden" aria-hidden="true">
-      <div class="card">
-        <h1>音を出すよ</h1>
-        <p>タップすると「ぽんっ！」が鳴ります。</p>
-        <button id="startBtn" class="primary" type="button">はじめる</button>
-        <button id="muteBtn" class="secondary" type="button">ミュートで</button>
-      </div>
-    </div>
+  <main id="stage" aria-label="タップゲーム">
+    <h1 id="title">タップで1点ゲーム</h1>
+    <p id="score">Score: 0</p>
+    <p id="hint">丸をタップしてね</p>
+    <button id="resetBtn" type="button">リセット</button>
+    <button id="target" type="button" aria-label="ターゲット"></button>
   </main>
 
   <script src="./game.js"></script>
